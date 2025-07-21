@@ -26,11 +26,12 @@ Preferred communication style: Simple, everyday language.
 - **Development**: Hot module replacement via Vite integration
 
 ### Data Storage Solutions
-- **Database**: PostgreSQL with Drizzle ORM
+- **Current**: In-memory storage (MemStorage) for development
+- **Prepared**: Firebase Firestore integration ready
 - **Schema Location**: Shared schema definitions in `/shared/schema.ts`
-- **Migrations**: Drizzle Kit for database migrations
-- **Connection**: Neon Database serverless PostgreSQL
-- **Development Storage**: In-memory storage class for development/testing
+- **Firebase Config**: Configured for project "agu-event-cpx"
+- **Collections**: students, transactions, market_sessions, admins
+- **Note**: Firebase requires service account key for production use
 
 ## Key Components
 

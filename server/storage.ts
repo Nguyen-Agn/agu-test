@@ -1,8 +1,4 @@
 import { 
-  students, 
-  transactions, 
-  marketSessions, 
-  admins,
   type Student, 
   type InsertStudent, 
   type Transaction, 
@@ -12,6 +8,8 @@ import {
   type Admin,
   type InsertAdmin
 } from "@shared/schema";
+import { db, COLLECTIONS } from "./firebase";
+import admin from 'firebase-admin';
 
 export interface IStorage {
   // Student operations
@@ -189,4 +187,293 @@ export class MemStorage implements IStorage {
   }
 }
 
+export class FirebaseStorage implements IStorage {
+  constructor() {
+    // Initialize with default admin and sample data if needed
+    this.initializeDefaultData();
+  }
+
+  private async initializeDefaultData() {
+    // Check if admin exists, if not create one
+    const adminExists = await this.getAdminByUsername("admin");
+    if (!adminExists) {
+      await this.createAdmin({
+        username: "admin",
+        password: "admin123", // In production, this should be hashed
+      });
+    }
+
+    // Check if sample market session exists
+    const sessions = await this.getAllMarketSessions();
+    if (sessions.length === 0) {
+      await this.createMarketSession({
+        title: "Phiên chợ tháng 12",
+        date: new Date("2024-12-25T08:00:00Z"),
+        location: "Sân trước thư viện trường",
+        timeSlot: "8:00 - 17:00",
+        wasteTypes: "Giấy, nhựa, kim loại",
+        gifts: "Cây xanh, túi vải",
+      });
+    }
+  }
+
+  async getStudent(id: number): Promise<Student | undefined> {
+    try {
+      const doc = await db.collection(COLLECTIONS.STUDENTS).doc(id.toString()).get();
+      if (!doc.exists) return undefined;
+      return { id, ...doc.data() } as Student;
+    } catch (error) {
+      console.error('Error getting student:', error);
+      return undefined;
+    }
+  }
+
+  async getStudentByStudentId(studentId: string): Promise<Student | undefined> {
+    try {
+      const snapshot = await db.collection(COLLECTIONS.STUDENTS)
+        .where('studentId', '==', studentId)
+        .limit(1)
+        .get();
+      
+      if (snapshot.empty) return undefined;
+      
+      const doc = snapshot.docs[0];
+      return { id: parseInt(doc.id), ...doc.data() } as Student;
+    } catch (error) {
+      console.error('Error getting student by studentId:', error);
+      return undefined;
+    }
+  }
+
+  async getStudentByEmail(email: string): Promise<Student | undefined> {
+    try {
+      const snapshot = await db.collection(COLLECTIONS.STUDENTS)
+        .where('email', '==', email)
+        .limit(1)
+        .get();
+      
+      if (snapshot.empty) return undefined;
+      
+      const doc = snapshot.docs[0];
+      return { id: parseInt(doc.id), ...doc.data() } as Student;
+    } catch (error) {
+      console.error('Error getting student by email:', error);
+      return undefined;
+    }
+  }
+
+  async createStudent(insertStudent: InsertStudent): Promise<Student> {
+    try {
+      // Generate a unique ID
+      const id = Date.now();
+      const student: Student = { 
+        ...insertStudent, 
+        id, 
+        totalPoints: 0 
+      };
+      
+      await db.collection(COLLECTIONS.STUDENTS).doc(id.toString()).set({
+        ...insertStudent,
+        totalPoints: 0
+      });
+      
+      return student;
+    } catch (error) {
+      console.error('Error creating student:', error);
+      throw error;
+    }
+  }
+
+  async updateStudent(id: number, updates: Partial<Student>): Promise<Student | undefined> {
+    try {
+      const docRef = db.collection(COLLECTIONS.STUDENTS).doc(id.toString());
+      const doc = await docRef.get();
+      
+      if (!doc.exists) return undefined;
+      
+      await docRef.update(updates);
+      const updatedDoc = await docRef.get();
+      return { id, ...updatedDoc.data() } as Student;
+    } catch (error) {
+      console.error('Error updating student:', error);
+      return undefined;
+    }
+  }
+
+  async deleteStudent(id: number): Promise<boolean> {
+    try {
+      await db.collection(COLLECTIONS.STUDENTS).doc(id.toString()).delete();
+      return true;
+    } catch (error) {
+      console.error('Error deleting student:', error);
+      return false;
+    }
+  }
+
+  async getAllStudents(): Promise<Student[]> {
+    try {
+      const snapshot = await db.collection(COLLECTIONS.STUDENTS).get();
+      return snapshot.docs.map(doc => ({
+        id: parseInt(doc.id),
+        ...doc.data()
+      })) as Student[];
+    } catch (error) {
+      console.error('Error getting all students:', error);
+      return [];
+    }
+  }
+
+  async getTransactionsByStudentId(studentId: number): Promise<Transaction[]> {
+    try {
+      const snapshot = await db.collection(COLLECTIONS.TRANSACTIONS)
+        .where('studentId', '==', studentId)
+        .orderBy('date', 'desc')
+        .get();
+      
+      return snapshot.docs.map(doc => ({
+        id: parseInt(doc.id),
+        ...doc.data(),
+        date: doc.data().date.toDate()
+      })) as Transaction[];
+    } catch (error) {
+      console.error('Error getting transactions by student ID:', error);
+      return [];
+    }
+  }
+
+  async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
+    try {
+      const id = Date.now();
+      const transaction: Transaction = {
+        ...insertTransaction,
+        id,
+        date: new Date(),
+      };
+      
+      await db.collection(COLLECTIONS.TRANSACTIONS).doc(id.toString()).set({
+        ...insertTransaction,
+        date: new Date()
+      });
+      
+      // Update student's total points
+      const studentDocRef = db.collection(COLLECTIONS.STUDENTS).doc(insertTransaction.studentId.toString());
+      await studentDocRef.update({
+        totalPoints: admin.firestore.FieldValue.increment(insertTransaction.points)
+      });
+      
+      return transaction;
+    } catch (error) {
+      console.error('Error creating transaction:', error);
+      throw error;
+    }
+  }
+
+  async getAllTransactions(): Promise<Transaction[]> {
+    try {
+      const snapshot = await db.collection(COLLECTIONS.TRANSACTIONS)
+        .orderBy('date', 'desc')
+        .get();
+      
+      return snapshot.docs.map(doc => ({
+        id: parseInt(doc.id),
+        ...doc.data(),
+        date: doc.data().date.toDate()
+      })) as Transaction[];
+    } catch (error) {
+      console.error('Error getting all transactions:', error);
+      return [];
+    }
+  }
+
+  async getAllMarketSessions(): Promise<MarketSession[]> {
+    try {
+      const snapshot = await db.collection(COLLECTIONS.MARKET_SESSIONS)
+        .orderBy('date', 'desc')
+        .get();
+      
+      return snapshot.docs.map(doc => ({
+        id: parseInt(doc.id),
+        ...doc.data(),
+        date: doc.data().date.toDate()
+      })) as MarketSession[];
+    } catch (error) {
+      console.error('Error getting market sessions:', error);
+      return [];
+    }
+  }
+
+  async createMarketSession(insertSession: InsertMarketSession): Promise<MarketSession> {
+    try {
+      const id = Date.now();
+      const session: MarketSession = { ...insertSession, id };
+      
+      await db.collection(COLLECTIONS.MARKET_SESSIONS).doc(id.toString()).set(insertSession);
+      
+      return session;
+    } catch (error) {
+      console.error('Error creating market session:', error);
+      throw error;
+    }
+  }
+
+  async updateMarketSession(id: number, updates: Partial<MarketSession>): Promise<MarketSession | undefined> {
+    try {
+      const docRef = db.collection(COLLECTIONS.MARKET_SESSIONS).doc(id.toString());
+      const doc = await docRef.get();
+      
+      if (!doc.exists) return undefined;
+      
+      await docRef.update(updates);
+      const updatedDoc = await docRef.get();
+      return { id, ...updatedDoc.data() } as MarketSession;
+    } catch (error) {
+      console.error('Error updating market session:', error);
+      return undefined;
+    }
+  }
+
+  async deleteMarketSession(id: number): Promise<boolean> {
+    try {
+      await db.collection(COLLECTIONS.MARKET_SESSIONS).doc(id.toString()).delete();
+      return true;
+    } catch (error) {
+      console.error('Error deleting market session:', error);
+      return false;
+    }
+  }
+
+  async getAdminByUsername(username: string): Promise<Admin | undefined> {
+    try {
+      const snapshot = await db.collection(COLLECTIONS.ADMINS)
+        .where('username', '==', username)
+        .limit(1)
+        .get();
+      
+      if (snapshot.empty) return undefined;
+      
+      const doc = snapshot.docs[0];
+      return { id: parseInt(doc.id), ...doc.data() } as Admin;
+    } catch (error) {
+      console.error('Error getting admin by username:', error);
+      return undefined;
+    }
+  }
+
+  async createAdmin(insertAdmin: InsertAdmin): Promise<Admin> {
+    try {
+      const id = Date.now();
+      const admin: Admin = { ...insertAdmin, id };
+      
+      await db.collection(COLLECTIONS.ADMINS).doc(id.toString()).set(insertAdmin);
+      
+      return admin;
+    } catch (error) {
+      console.error('Error creating admin:', error);
+      throw error;
+    }
+  }
+}
+
+// Temporarily using in-memory storage for development
+// To use Firebase, change to: export const storage = new FirebaseStorage();
 export const storage = new MemStorage();
