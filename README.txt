@@ -60,10 +60,37 @@ Website chạy tại: http://localhost:5000
 - Navigation bar với đăng nhập/đăng xuất
 
 ## CHUYỂN ĐỔI SANG FIREBASE (KHI CẦN)
-1. Lấy Firebase service account key từ Firebase Console
-2. Thêm biến môi trường FIREBASE_SERVICE_ACCOUNT_KEY
-3. Trong server/storage.ts: đổi từ MemStorage sang FirebaseStorage
-4. Restart server
+### Bước 1: Lấy Firebase Service Account Key
+- Vào Firebase Console → Project Settings → Service Accounts
+- Click "Generate new private key" → Download file JSON
+
+### Bước 2: Thêm Firebase Key (CHỌN 1 TRONG 2 CÁCH)
+
+**Cách 1 - Tạo file firebase-key.json (DỄ NHẤT):**
+- Copy file JSON vừa download
+- Đổi tên thành "firebase-key.json"  
+- Đặt vào thư mục gốc của dự án (cùng cấp với package.json)
+
+**Cách 2 - Biến môi trường:**
+- Tạo file .env
+- Thêm dòng: FIREBASE_SERVICE_ACCOUNT_KEY={"type":"service_account",...}
+- (Copy toàn bộ nội dung file JSON vào)
+
+### Bước 3: Đổi Database
+Trong file server/storage.ts, dòng cuối cùng:
+```
+// Đổi từ:
+export const storage = new MemStorage();
+// Thành:
+export const storage = new FirebaseStorage();
+```
+
+### Bước 4: Restart server
+```
+npm run dev
+```
+
+Xong! Website sẽ tự động dùng Firebase Firestore.
 
 ## CẤU TRÚC DATABASE FIREBASE
 Collections sẽ tạo:
