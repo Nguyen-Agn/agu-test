@@ -60,23 +60,8 @@ Website chạy tại: http://localhost:5000
 - Navigation bar với đăng nhập/đăng xuất
 
 ## CHUYỂN ĐỔI SANG FIREBASE (KHI CẦN)
-### Bước 1: Lấy Firebase Service Account Key
-- Vào Firebase Console → Project Settings → Service Accounts
-- Click "Generate new private key" → Download file JSON
 
-### Bước 2: Thêm Firebase Key (CHỌN 1 TRONG 2 CÁCH)
-
-**Cách 1 - Tạo file firebase-key.json (DỄ NHẤT):**
-- Copy file JSON vừa download
-- Đổi tên thành "firebase-key.json"  
-- Đặt vào thư mục gốc của dự án (cùng cấp với package.json)
-
-**Cách 2 - Biến môi trường:**
-- Tạo file .env
-- Thêm dòng: FIREBASE_SERVICE_ACCOUNT_KEY={"type":"service_account",...}
-- (Copy toàn bộ nội dung file JSON vào)
-
-### Bước 3: Đổi Database
+### Bước 1: Chuyển sang Firebase Database
 Trong file server/storage.ts, dòng cuối cùng:
 ```
 // Đổi từ:
@@ -85,12 +70,28 @@ export const storage = new MemStorage();
 export const storage = new FirebaseStorage();
 ```
 
-### Bước 4: Restart server
+### Bước 2: Test với Firebase (Local)
 ```
 npm run dev
 ```
 
-Xong! Website sẽ tự động dùng Firebase Firestore.
+### Bước 3: Deploy lên Firebase Hosting
+```
+# Build project
+./build-firebase.sh
+
+# Deploy (cần Firebase CLI)
+npm install -g firebase-tools
+firebase login
+firebase init hosting
+firebase deploy
+```
+
+**LƯU Ý QUAN TRỌNG:**
+- File firebase-key.json đã được tạo sẵn với service account key của bạn
+- Firebase config đã được cập nhật với thông tin mới (appId: 238f24b8279a6c6f0197b5)
+- Website sẽ tự động build vào thư mục public/ để tương thích Firebase hosting
+- Nếu cần GOOGLE_API_KEY, thêm vào biến môi trường
 
 ## CẤU TRÚC DATABASE FIREBASE
 Collections sẽ tạo:

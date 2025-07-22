@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "agu-event-cpx",
+  "private_key_id": "cfa2dd8d715164b4a21f5520fe868a090126560e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDchIshRvy1uU7c\nSsGNqHNXpUR/qSHPHJop0hvqEhA3ZpRjSUo9v7X4JDIa4HBRwKaEzP/jDnsraknJ\npAAZI193ZBzHXGHgRv52cs7B4jMPNp1aDveGKXGYfrsyJqlAK4qOtRvuEWEuj+/y\nDa+AXsH8HhsFMt+wtwoZ2HD1aSisoWZcR99FHtKCF2Wo4wQKznEK+j5d0EHXaLtf\n1OYvGPqWfNam+NTA4iyF/Z6YuuEbZ14OuAvoW9RLCC14tOLp0dtonODz/0ChmYmY\nNc+tCHFlig3rL6DS1N7k6eVuVLtK/9ulyrOOWPCsxO2Mv0Ya/jS4Ph3PsgqFOSXK\nchxk1qu3AgMBAAECggEAIYpHXxhc94bn57m3FsS4Rm+uoFqTUU2CuG+2IuJhp8pG\nq/VYokfU8XsJ7l1VqDlHE6ZWjLQpXw3Q8rHqEtH3sM8K3VG9zD2hKmZGqj9FjQbY\nnBxqD6fXj8oRv5k3t7Z9ZYkKbqyMUJWPxHrV8jg7Lc3h2aR4K6p1F9YRpXmN3bYr\n0C8V7L2XqDGJkFOlT9qQ8I5r6cKvW4o9zPmBaFuM2gL7h6XYdNqRv3kDQx9K8p0z\n8VK5g6J2DWyeE8Rj7Lq1Q5cNsA9K3zY6FrTGhMVpW4l8gX7cR2hB6X8Q0Z4JY9vP\n5K2V9rC8G3QoE1M7ZH4F6R8P9V0xN1dJK5pqwYrDgQKBgQD9V3K0mQ+Q8j4r7FsR\nL1Y3ZbKCp8t6v9w0XgH5FjN2o3qQ8Z7XrP4Y1K6VsGJkWpR2H8T4L9vCg3h0sB2Y\nZqN8X4m7K1V9r6dGpQ0Z3cYhB5jF9tL2wRvK8X1aH6pMgS7Y9qC2ZR1dFjT6vNpX\nL8oB4G9tK5VsH3F0qQ2RbK7hwQKBgQDfV9Y8mL+W5rQ3gH2K4jN6oF8pC1qR7s9X\nZb4V0t2K8g1mFjP6Q7Y3h9rL8XoC5vT4K2N8W6p1GsB7Z0qR3dH9K5jV1Y8rL4pC\n6tG2M0qX7w9ZbF1o8Y3K6vR2H5pQ4N1L8gB9jT6sD2F7M0pW5rC3QoL8vH9K1YZX\nMgVbK2p9YwKBgQC7K8X4r9Y2Q1pL6vT8gB3F0oH1mR5Z7qCd9NrY3jK8VpW4L2oC\nX6F9rN3Q8sB1Y5pT7gH2K4jV6rL9dGQ0Z8m1F3oY7C2K6vR5HpQ3X8wB4G1t9L6j\nH7pY3N8W2qR4K5VsG1oF8rL3C6vT9HpQ0Z4jY7K8X1dF2mW6rC5NsB9gT4pLwQKB\ngBjH7Y9rL3K6vT4oF8qR2Z5X3pN8wB1G4C2K7jV0H9pQ6F8rL1Y3sB5Z7qCd9NmW\n4oH1K8X6r2Q3pL5vT8gB9F0oH7rY3jK4VpW1L2nC3Q8sB6Y5pT7gH2K4jV6rL9dG\nQ0Z8m1F3oY7C2K6vR5HpQ3X8wB4G1t9L6jH7pY3N8W2qR4K5VsG1oF8rL3C6vT9H\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@agu-event-cpx.iam.gserviceaccount.com",
+  "client_id": "104923136297337539039",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40agu-event-cpx.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
