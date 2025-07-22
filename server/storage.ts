@@ -1,15 +1,15 @@
-import { 
-  type Student, 
-  type InsertStudent, 
-  type Transaction, 
+import {
+  type Student,
+  type InsertStudent,
+  type Transaction,
   type InsertTransaction,
   type MarketSession,
   type InsertMarketSession,
   type Admin,
-  type InsertAdmin
+  type InsertAdmin,
 } from "@shared/schema";
 import { db, COLLECTIONS } from "./firebase";
-import admin from 'firebase-admin';
+import admin from "firebase-admin";
 
 export interface IStorage {
   // Student operations
@@ -17,21 +17,27 @@ export interface IStorage {
   getStudentByStudentId(studentId: string): Promise<Student | undefined>;
   getStudentByEmail(email: string): Promise<Student | undefined>;
   createStudent(student: InsertStudent): Promise<Student>;
-  updateStudent(id: number, updates: Partial<Student>): Promise<Student | undefined>;
+  updateStudent(
+    id: number,
+    updates: Partial<Student>,
+  ): Promise<Student | undefined>;
   deleteStudent(id: number): Promise<boolean>;
   getAllStudents(): Promise<Student[]>;
-  
+
   // Transaction operations
   getTransactionsByStudentId(studentId: number): Promise<Transaction[]>;
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;
   getAllTransactions(): Promise<Transaction[]>;
-  
+
   // Market session operations
   getAllMarketSessions(): Promise<MarketSession[]>;
   createMarketSession(session: InsertMarketSession): Promise<MarketSession>;
-  updateMarketSession(id: number, updates: Partial<MarketSession>): Promise<MarketSession | undefined>;
+  updateMarketSession(
+    id: number,
+    updates: Partial<MarketSession>,
+  ): Promise<MarketSession | undefined>;
   deleteMarketSession(id: number): Promise<boolean>;
-  
+
   // Admin operations
   getAdminByUsername(username: string): Promise<Admin | undefined>;
   createAdmin(admin: InsertAdmin): Promise<Admin>;
@@ -56,13 +62,13 @@ export class MemStorage implements IStorage {
     this.currentTransactionId = 1;
     this.currentMarketSessionId = 1;
     this.currentAdminId = 1;
-    
+
     // Initialize with default admin
     this.createAdmin({
       username: "admin",
       password: "admin123", // In production, this should be hashed
     });
-    
+
     // Initialize with sample market session
     this.createMarketSession({
       title: "Phiên chợ tháng 12",
@@ -92,19 +98,22 @@ export class MemStorage implements IStorage {
 
   async createStudent(insertStudent: InsertStudent): Promise<Student> {
     const id = this.currentStudentId++;
-    const student: Student = { 
-      ...insertStudent, 
-      id, 
-      totalPoints: 0 
+    const student: Student = {
+      ...insertStudent,
+      id,
+      totalPoints: 0,
     };
     this.students.set(id, student);
     return student;
   }
 
-  async updateStudent(id: number, updates: Partial<Student>): Promise<Student | undefined> {
+  async updateStudent(
+    id: number,
+    updates: Partial<Student>,
+  ): Promise<Student | undefined> {
     const student = this.students.get(id);
     if (!student) return undefined;
-    
+
     const updatedStudent = { ...student, ...updates };
     this.students.set(id, updatedStudent);
     return updatedStudent;
@@ -120,11 +129,13 @@ export class MemStorage implements IStorage {
 
   async getTransactionsByStudentId(studentId: number): Promise<Transaction[]> {
     return Array.from(this.transactions.values())
-      .filter(transaction => transaction.studentId === studentId)
+      .filter((transaction) => transaction.studentId === studentId)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
 
-  async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
+  async createTransaction(
+    insertTransaction: InsertTransaction,
+  ): Promise<Transaction> {
     const id = this.currentTransactionId++;
     const transaction: Transaction = {
       ...insertTransaction,
@@ -132,38 +143,45 @@ export class MemStorage implements IStorage {
       date: new Date(),
     };
     this.transactions.set(id, transaction);
-    
+
     // Update student's total points
     const student = this.students.get(insertTransaction.studentId);
     if (student) {
       student.totalPoints += insertTransaction.points;
       this.students.set(student.id, student);
     }
-    
+
     return transaction;
   }
 
   async getAllTransactions(): Promise<Transaction[]> {
-    return Array.from(this.transactions.values())
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return Array.from(this.transactions.values()).sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
   }
 
   async getAllMarketSessions(): Promise<MarketSession[]> {
-    return Array.from(this.marketSessions.values())
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return Array.from(this.marketSessions.values()).sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
   }
 
-  async createMarketSession(insertSession: InsertMarketSession): Promise<MarketSession> {
+  async createMarketSession(
+    insertSession: InsertMarketSession,
+  ): Promise<MarketSession> {
     const id = this.currentMarketSessionId++;
     const session: MarketSession = { ...insertSession, id };
     this.marketSessions.set(id, session);
     return session;
   }
 
-  async updateMarketSession(id: number, updates: Partial<MarketSession>): Promise<MarketSession | undefined> {
+  async updateMarketSession(
+    id: number,
+    updates: Partial<MarketSession>,
+  ): Promise<MarketSession | undefined> {
     const session = this.marketSessions.get(id);
     if (!session) return undefined;
-    
+
     const updatedSession = { ...session, ...updates };
     this.marketSessions.set(id, updatedSession);
     return updatedSession;
@@ -219,45 +237,50 @@ export class FirebaseStorage implements IStorage {
 
   async getStudent(id: number): Promise<Student | undefined> {
     try {
-      const doc = await db.collection(COLLECTIONS.STUDENTS).doc(id.toString()).get();
+      const doc = await db
+        .collection(COLLECTIONS.STUDENTS)
+        .doc(id.toString())
+        .get();
       if (!doc.exists) return undefined;
       return { id, ...doc.data() } as Student;
     } catch (error) {
-      console.error('Error getting student:', error);
+      console.error("Error getting student:", error);
       return undefined;
     }
   }
 
   async getStudentByStudentId(studentId: string): Promise<Student | undefined> {
     try {
-      const snapshot = await db.collection(COLLECTIONS.STUDENTS)
-        .where('studentId', '==', studentId)
+      const snapshot = await db
+        .collection(COLLECTIONS.STUDENTS)
+        .where("studentId", "==", studentId)
         .limit(1)
         .get();
-      
+
       if (snapshot.empty) return undefined;
-      
+
       const doc = snapshot.docs[0];
       return { id: parseInt(doc.id), ...doc.data() } as Student;
     } catch (error) {
-      console.error('Error getting student by studentId:', error);
+      console.error("Error getting student by studentId:", error);
       return undefined;
     }
   }
 
   async getStudentByEmail(email: string): Promise<Student | undefined> {
     try {
-      const snapshot = await db.collection(COLLECTIONS.STUDENTS)
-        .where('email', '==', email)
+      const snapshot = await db
+        .collection(COLLECTIONS.STUDENTS)
+        .where("email", "==", email)
         .limit(1)
         .get();
-      
+
       if (snapshot.empty) return undefined;
-      
+
       const doc = snapshot.docs[0];
       return { id: parseInt(doc.id), ...doc.data() } as Student;
     } catch (error) {
-      console.error('Error getting student by email:', error);
+      console.error("Error getting student by email:", error);
       return undefined;
     }
   }
@@ -266,36 +289,42 @@ export class FirebaseStorage implements IStorage {
     try {
       // Generate a unique ID
       const id = Date.now();
-      const student: Student = { 
-        ...insertStudent, 
-        id, 
-        totalPoints: 0 
-      };
-      
-      await db.collection(COLLECTIONS.STUDENTS).doc(id.toString()).set({
+      const student: Student = {
         ...insertStudent,
-        totalPoints: 0
-      });
-      
+        id,
+        totalPoints: 0,
+      };
+
+      await db
+        .collection(COLLECTIONS.STUDENTS)
+        .doc(id.toString())
+        .set({
+          ...insertStudent,
+          totalPoints: 0,
+        });
+
       return student;
     } catch (error) {
-      console.error('Error creating student:', error);
+      console.error("Error creating student:", error);
       throw error;
     }
   }
 
-  async updateStudent(id: number, updates: Partial<Student>): Promise<Student | undefined> {
+  async updateStudent(
+    id: number,
+    updates: Partial<Student>,
+  ): Promise<Student | undefined> {
     try {
       const docRef = db.collection(COLLECTIONS.STUDENTS).doc(id.toString());
       const doc = await docRef.get();
-      
+
       if (!doc.exists) return undefined;
-      
+
       await docRef.update(updates);
       const updatedDoc = await docRef.get();
       return { id, ...updatedDoc.data() } as Student;
     } catch (error) {
-      console.error('Error updating student:', error);
+      console.error("Error updating student:", error);
       return undefined;
     }
   }
@@ -305,7 +334,7 @@ export class FirebaseStorage implements IStorage {
       await db.collection(COLLECTIONS.STUDENTS).doc(id.toString()).delete();
       return true;
     } catch (error) {
-      console.error('Error deleting student:', error);
+      console.error("Error deleting student:", error);
       return false;
     }
   }
@@ -313,35 +342,38 @@ export class FirebaseStorage implements IStorage {
   async getAllStudents(): Promise<Student[]> {
     try {
       const snapshot = await db.collection(COLLECTIONS.STUDENTS).get();
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc) => ({
         id: parseInt(doc.id),
-        ...doc.data()
+        ...doc.data(),
       })) as Student[];
     } catch (error) {
-      console.error('Error getting all students:', error);
+      console.error("Error getting all students:", error);
       return [];
     }
   }
 
   async getTransactionsByStudentId(studentId: number): Promise<Transaction[]> {
     try {
-      const snapshot = await db.collection(COLLECTIONS.TRANSACTIONS)
-        .where('studentId', '==', studentId)
-        .orderBy('date', 'desc')
+      const snapshot = await db
+        .collection(COLLECTIONS.TRANSACTIONS)
+        .where("studentId", "==", studentId)
+        .orderBy("date", "desc")
         .get();
-      
-      return snapshot.docs.map(doc => ({
+
+      return snapshot.docs.map((doc) => ({
         id: parseInt(doc.id),
         ...doc.data(),
-        date: doc.data().date.toDate()
+        date: doc.data().date.toDate(),
       })) as Transaction[];
     } catch (error) {
-      console.error('Error getting transactions by student ID:', error);
+      console.error("Error getting transactions by student ID:", error);
       return [];
     }
   }
 
-  async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
+  async createTransaction(
+    insertTransaction: InsertTransaction,
+  ): Promise<Transaction> {
     try {
       const id = Date.now();
       const transaction: Transaction = {
@@ -349,112 +381,135 @@ export class FirebaseStorage implements IStorage {
         id,
         date: new Date(),
       };
-      
-      await db.collection(COLLECTIONS.TRANSACTIONS).doc(id.toString()).set({
-        ...insertTransaction,
-        date: new Date()
-      });
-      
+
+      await db
+        .collection(COLLECTIONS.TRANSACTIONS)
+        .doc(id.toString())
+        .set({
+          ...insertTransaction,
+          date: new Date(),
+        });
+
       // Update student's total points
-      const studentDocRef = db.collection(COLLECTIONS.STUDENTS).doc(insertTransaction.studentId.toString());
+      const studentDocRef = db
+        .collection(COLLECTIONS.STUDENTS)
+        .doc(insertTransaction.studentId.toString());
       await studentDocRef.update({
-        totalPoints: admin.firestore.FieldValue.increment(insertTransaction.points)
+        totalPoints: admin.firestore.FieldValue.increment(
+          insertTransaction.points,
+        ),
       });
-      
+
       return transaction;
     } catch (error) {
-      console.error('Error creating transaction:', error);
+      console.error("Error creating transaction:", error);
       throw error;
     }
   }
 
   async getAllTransactions(): Promise<Transaction[]> {
     try {
-      const snapshot = await db.collection(COLLECTIONS.TRANSACTIONS)
-        .orderBy('date', 'desc')
+      const snapshot = await db
+        .collection(COLLECTIONS.TRANSACTIONS)
+        .orderBy("date", "desc")
         .get();
-      
-      return snapshot.docs.map(doc => ({
+
+      return snapshot.docs.map((doc) => ({
         id: parseInt(doc.id),
         ...doc.data(),
-        date: doc.data().date.toDate()
+        date: doc.data().date.toDate(),
       })) as Transaction[];
     } catch (error) {
-      console.error('Error getting all transactions:', error);
+      console.error("Error getting all transactions:", error);
       return [];
     }
   }
 
   async getAllMarketSessions(): Promise<MarketSession[]> {
     try {
-      const snapshot = await db.collection(COLLECTIONS.MARKET_SESSIONS)
-        .orderBy('date', 'desc')
+      const snapshot = await db
+        .collection(COLLECTIONS.MARKET_SESSIONS)
+        .orderBy("date", "desc")
         .get();
-      
-      return snapshot.docs.map(doc => ({
+
+      return snapshot.docs.map((doc) => ({
         id: parseInt(doc.id),
         ...doc.data(),
-        date: doc.data().date.toDate()
+        date: doc.data().date.toDate(),
       })) as MarketSession[];
     } catch (error) {
-      console.error('Error getting market sessions:', error);
+      console.error("Error getting market sessions:", error);
       return [];
     }
   }
 
-  async createMarketSession(insertSession: InsertMarketSession): Promise<MarketSession> {
+  async createMarketSession(
+    insertSession: InsertMarketSession,
+  ): Promise<MarketSession> {
     try {
       const id = Date.now();
       const session: MarketSession = { ...insertSession, id };
-      
-      await db.collection(COLLECTIONS.MARKET_SESSIONS).doc(id.toString()).set(insertSession);
-      
+
+      await db
+        .collection(COLLECTIONS.MARKET_SESSIONS)
+        .doc(id.toString())
+        .set(insertSession);
+
       return session;
     } catch (error) {
-      console.error('Error creating market session:', error);
+      console.error("Error creating market session:", error);
       throw error;
     }
   }
 
-  async updateMarketSession(id: number, updates: Partial<MarketSession>): Promise<MarketSession | undefined> {
+  async updateMarketSession(
+    id: number,
+    updates: Partial<MarketSession>,
+  ): Promise<MarketSession | undefined> {
     try {
-      const docRef = db.collection(COLLECTIONS.MARKET_SESSIONS).doc(id.toString());
+      const docRef = db
+        .collection(COLLECTIONS.MARKET_SESSIONS)
+        .doc(id.toString());
       const doc = await docRef.get();
-      
+
       if (!doc.exists) return undefined;
-      
+
       await docRef.update(updates);
       const updatedDoc = await docRef.get();
       return { id, ...updatedDoc.data() } as MarketSession;
     } catch (error) {
-      console.error('Error updating market session:', error);
+      console.error("Error updating market session:", error);
       return undefined;
     }
   }
 
   async deleteMarketSession(id: number): Promise<boolean> {
     try {
-      await db.collection(COLLECTIONS.MARKET_SESSIONS).doc(id.toString()).delete();
+      await db
+        .collection(COLLECTIONS.MARKET_SESSIONS)
+        .doc(id.toString())
+        .delete();
       return true;
     } catch (error) {
-      console.error('Error deleting market session:', error);
+      console.error("Error deleting market session:", error);
       return false;
     }
   }
 
   async getAdminByUsername(username: string): Promise<Admin | undefined> {
     try {
-      const snapshot = await db.collection(COLLECTIONS.ADMINS)
-        .where('username', '==', username)
+      const snapshot = await db
+        .collection(COLLECTIONS.ADMINS)
+        .where("username", "==", username)
         .limit(1)
         .get();
-      
+
       if (snapshot.empty) return undefined;
-      
+
       const doc = snapshot.docs[0];
       return { id: parseInt(doc.id), ...doc.data() } as Admin;
     } catch (error) {
-      console.error('Error getting admin by username:', error);
+      console.error("Error getting admin by username:", error);
       return undefined;
     }
   }
@@ -463,12 +518,15 @@ export class FirebaseStorage implements IStorage {
     try {
       const id = Date.now();
       const admin: Admin = { ...insertAdmin, id };
-      
-      await db.collection(COLLECTIONS.ADMINS).doc(id.toString()).set(insertAdmin);
-      
+
+      await db
+        .collection(COLLECTIONS.ADMINS)
+        .doc(id.toString())
+        .set(insertAdmin);
+
       return admin;
     } catch (error) {
-      console.error('Error creating admin:', error);
+      console.error("Error creating admin:", error);
       throw error;
     }
   }
@@ -476,4 +534,4 @@ export class FirebaseStorage implements IStorage {
 
 // Temporarily using in-memory storage for development
 // To use Firebase, change to: export const storage = new FirebaseStorage();
-export const storage = new MemStorage();
+export const storage = new FirebaseStorage();
