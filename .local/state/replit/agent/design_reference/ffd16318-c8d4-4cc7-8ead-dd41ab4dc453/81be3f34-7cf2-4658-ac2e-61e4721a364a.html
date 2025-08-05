@@ -1,0 +1,487 @@
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chợ Xanh - Đổi Rác Lấy Điểm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                    },
+                    colors: {
+                        primary: '#10B981',
+                        secondary: '#6B7280',
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- @COMPONENT: NavigationHeader -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-primary">🌱 Chợ Xanh</h1>
+                </div>
+                <div class="flex space-x-6">
+                    <button class="nav-btn active text-gray-900 font-medium">Trang chủ</button>
+                    <button class="nav-btn text-gray-600 hover:text-gray-900">Điểm của tôi</button>
+                    <button class="nav-btn text-gray-600 hover:text-gray-900">Quản lý</button>
+                    <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                        Đăng nhập
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- @END_COMPONENT: NavigationHeader -->
+
+    <div id="app-container" class="min-h-screen">
+        <!-- @COMPONENT: HomePage -->
+        <div id="home-page" class="page-content">
+            <!-- Hero Section -->
+            <section class="bg-gradient-to-b from-green-50 to-white py-16">
+                <div class="max-w-4xl mx-auto px-4 text-center">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                        Đổi Rác Lấy Điểm - Bảo Vệ Môi Trường
+                    </h2>
+                    <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                        Tham gia chương trình tái chế, đổi rác thải lấy điểm thưởng và nhận quà hấp dẫn. 
+                        Góp phần xây dựng môi trường xanh cho trường học.
+                    </p>
+                    <button class="bg-primary text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-green-600 transition-colors">
+                        Đăng ký tham gia ngay
+                    </button>
+                </div>
+            </section>
+
+            <!-- Schedule Section -->
+            <section class="py-12">
+                <div class="max-w-4xl mx-auto px-4">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Lịch Phiên Chợ Sắp Tới</h3>
+                    <div class="bg-white rounded-lg shadow-sm border p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900">Phiên chợ tháng 12</h4>
+                                <p class="text-gray-600">Sân trước thư viện trường</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-primary">25</div>
+                                <div class="text-sm text-gray-600">Tháng 12</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="font-medium text-gray-700">Thời gian:</span>
+                                <p class="text-gray-600">8:00 - 17:00</p>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">Loại rác nhận:</span>
+                                <p class="text-gray-600">Giấy, nhựa, kim loại</p>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">Quà tặng:</span>
+                                <p class="text-gray-600">Cây xanh, túi vải</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- @END_COMPONENT: HomePage -->
+
+        <!-- @COMPONENT: RegistrationPage -->
+        <div id="registration-page" class="page-content hidden">
+            <section class="py-12">
+                <div class="max-w-2xl mx-auto px-4">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Đăng Ký Tham Gia</h2>
+                        <p class="text-gray-600">Điền thông tin để tham gia chương trình</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm border p-8">
+                        <form class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Họ và tên <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                                       placeholder="Nhập họ và tên đầy đủ">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Mã số sinh viên <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                                       placeholder="VD: 2021001234">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Email <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                                       placeholder="student@university.edu.vn">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Ngành học <span class="text-red-500">*</span>
+                                </label>
+                                <select required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                    <option value="">Chọn ngành học</option>
+                                    <option value="cntt">Công nghệ thông tin</option>
+                                    <option value="kt">Kinh tế</option>
+                                    <option value="nn">Ngoại ngữ</option>
+                                    <option value="sp">Sư phạm</option>
+                                    <option value="other">Khác</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Số điện thoại <span class="text-red-500">*</span>
+                                </label>
+                                <input type="tel" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                                       placeholder="0901234567">
+                            </div>
+
+                            <button type="submit" 
+                                    class="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors">
+                                Đăng ký tham gia
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- @END_COMPONENT: RegistrationPage -->
+
+        <!-- @COMPONENT: StudentDashboard -->
+        <div id="student-dashboard" class="page-content hidden">
+            <section class="py-12">
+                <div class="max-w-4xl mx-auto px-4">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Điểm Tích Lũy Của Tôi</h2>
+                        <p class="text-gray-600">Chào <span data-bind="user.name">Nguyễn Văn An</span> - MSSV: <span data-bind="user.student_id">2021001234</span></p>
+                    </div>
+
+                    <!-- Points Summary -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow-sm border p-6">
+                            <div class="flex items-center">
+                                <div class="bg-primary/10 p-3 rounded-lg">
+                                    <span class="text-2xl">🏆</span>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-2xl font-bold text-primary" data-bind="user.total_points">1,250</h3>
+                                    <p class="text-sm text-gray-600">Tổng điểm tích lũy</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm border p-6">
+                            <div class="flex items-center">
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <span class="text-2xl">♻️</span>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-2xl font-bold text-gray-900" data-bind="user.total_recycled">45.2</h3>
+                                    <p class="text-sm text-gray-600">Kg rác đã đổi</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm border p-6">
+                            <div class="flex items-center">
+                                <div class="bg-yellow-100 p-3 rounded-lg">
+                                    <span class="text-2xl">🎁</span>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-2xl font-bold text-gray-900" data-bind="user.gifts_received">8</h3>
+                                    <p class="text-sm text-gray-600">Quà đã nhận</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transaction History -->
+                    <div class="bg-white rounded-lg shadow-sm border">
+                        <div class="p-6 border-b">
+                            <h3 class="text-xl font-semibold text-gray-900">Lịch Sử Đổi Rác</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <!-- @MAP: transactions.map(transaction => ( -->
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Ngày</th>
+                                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Loại rác</th>
+                                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Số lượng (kg)</th>
+                                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Điểm nhận</th>
+                                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Quà nhận</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-900">15/12/2024</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Giấy, nhựa</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">12.5</td>
+                                        <td class="px-6 py-4 text-sm font-medium text-primary">+250 điểm</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Túi vải</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-900">08/12/2024</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Kim loại</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">8.0</td>
+                                        <td class="px-6 py-4 text-sm font-medium text-primary">+400 điểm</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Cây xanh nhỏ</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-900">01/12/2024</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Giấy</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">15.3</td>
+                                        <td class="px-6 py-4 text-sm font-medium text-primary">+180 điểm</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Bút chì</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-900">25/11/2024</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Nhựa</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">9.4</td>
+                                        <td class="px-6 py-4 text-sm font-medium text-primary">+420 điểm</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Vở ghi chú</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- @END_COMPONENT: StudentDashboard -->
+
+        <!-- @COMPONENT: AdminPanel -->
+        <div id="admin-panel" class="page-content hidden">
+            <section class="py-12">
+                <div class="max-w-6xl mx-auto px-4">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Trang Quản Lý</h2>
+                        <p class="text-gray-600">Quản lý sinh viên và điểm tích lũy</p>
+                    </div>
+
+                    <!-- Admin Navigation Tabs -->
+                    <div class="bg-white rounded-lg shadow-sm border mb-8">
+                        <div class="border-b">
+                            <nav class="flex">
+                                <button class="admin-tab active px-6 py-4 text-sm font-medium text-primary border-b-2 border-primary">
+                                    Danh sách sinh viên
+                                </button>
+                                <button class="admin-tab px-6 py-4 text-sm font-medium text-gray-500 hover:text-gray-700">
+                                    Cập nhật điểm
+                                </button>
+                                <button class="admin-tab px-6 py-4 text-sm font-medium text-gray-500 hover:text-gray-700">
+                                    Quản lý phiên chợ
+                                </button>
+                            </nav>
+                        </div>
+
+                        <!-- Students List Tab -->
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-900">Sinh viên đã đăng ký</h3>
+                                <div class="flex space-x-2">
+                                    <input type="search" placeholder="Tìm kiếm sinh viên..." 
+                                           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                    <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-600">
+                                        Tìm kiếm
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">MSSV</th>
+                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">Họ tên</th>
+                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">Ngành</th>
+                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">Email</th>
+                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">Điểm</th>
+                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="px-4 py-4 text-sm font-medium text-gray-900">2021001234</td>
+                                            <td class="px-4 py-4 text-sm text-gray-600">Nguyễn Văn An</td>
+                                            <td class="px-4 py-4 text-sm text-gray-600">CNTT</td>
+                                            <td class="px-4 py-4 text-sm text-gray-600">an.nv@student.edu.vn</td>
+                                            <td class="px-4 py-4 text-sm font-medium text-primary">1,250</td>
+                                            <td class="px-4 py-4 text-sm">
+                                                <button class="text-primary hover:text-green-600 mr-2">Sửa</button>
+                                                <button class="text-red-600 hover:text-red-800">Xóa</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-4 py-4 text-sm font-medium text-gray-900">2021005678</td>
+                                            <td class="px-4 py-4 text-sm text-gray-600">Trần Thị Bình</td>
+                                            <td class="px-4 py-4 text-sm text-gray-600">Kinh tế</td>
+                                            <td class="px-4 py-4 text-sm text-gray-600">binh.tt@student.edu.vn</td>
+                                            <td class="px-4 py-4 text-sm font-medium text-primary">850</td>
+                                            <td class="px-4 py-4 text-sm">
+                                                <button class="text-primary hover:text-green-600 mr-2">Sửa</button>
+                                                <button class="text-red-600 hover:text-red-800">Xóa</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-4 py-4 text-sm font-medium text-gray-900">2021009876</td>
+                                            <td class="px-4 py-4 text-sm text-gray-600">Lê Minh Cường</td>
+                                            <td class="px-4 py-4 text-sm text-gray-600">Sư phạm</td>
+                                            <td class="px-4 py-4 text-sm text-gray-600">cuong.lm@student.edu.vn</td>
+                                            <td class="px-4 py-4 text-sm font-medium text-primary">1,540</td>
+                                            <td class="px-4 py-4 text-sm">
+                                                <button class="text-primary hover:text-green-600 mr-2">Sửa</button>
+                                                <button class="text-red-600 hover:text-red-800">Xóa</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Update Points Modal -->
+                    <div id="update-points-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">Cập Nhật Điểm</h3>
+                            <form class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Sinh viên</label>
+                                    <input type="text" value="Nguyễn Văn An (2021001234)" readonly
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Loại rác</label>
+                                    <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                        <option>Giấy</option>
+                                        <option>Nhựa</option>
+                                        <option>Kim loại</option>
+                                        <option>Khác</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Số kg</label>
+                                    <input type="number" step="0.1" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                                           placeholder="0.0">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Điểm cộng</label>
+                                    <input type="number" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                                           placeholder="0">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Quà tặng</label>
+                                    <input type="text" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                                           placeholder="Túi vải, cây xanh...">
+                                </div>
+                                <div class="flex space-x-4 pt-4">
+                                    <button type="submit" class="flex-1 bg-primary text-white py-3 rounded-lg font-medium hover:bg-green-600">
+                                        Cập nhật
+                                    </button>
+                                    <button type="button" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-medium hover:bg-gray-300">
+                                        Hủy
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- @END_COMPONENT: AdminPanel -->
+    </div>
+
+    <script>
+        (function() {
+            // Simple page navigation
+            const pages = {
+                'home': document.getElementById('home-page'),
+                'register': document.getElementById('registration-page'),
+                'dashboard': document.getElementById('student-dashboard'),
+                'admin': document.getElementById('admin-panel')
+            };
+
+            const navButtons = document.querySelectorAll('.nav-btn');
+            
+            function showPage(pageId) {
+                // Hide all pages
+                Object.values(pages).forEach(page => {
+                    page.classList.add('hidden');
+                });
+                
+                // Show selected page
+                if (pages[pageId]) {
+                    pages[pageId].classList.remove('hidden');
+                }
+
+                // Update nav buttons
+                navButtons.forEach(btn => {
+                    btn.classList.remove('active', 'text-gray-900', 'font-medium');
+                    btn.classList.add('text-gray-600');
+                });
+            }
+
+            // Navigation event listeners
+            navButtons[0].addEventListener('click', () => showPage('home'));
+            navButtons[1].addEventListener('click', () => showPage('dashboard'));
+            navButtons[2].addEventListener('click', () => showPage('admin'));
+
+            // Registration button
+            document.querySelector('.bg-primary.text-white.px-8').addEventListener('click', () => {
+                showPage('register');
+            });
+
+            // Form submission simulation
+            document.querySelector('form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Đăng ký thành công! Vui lòng đăng nhập để xem điểm tích lũy.');
+                showPage('dashboard');
+            });
+
+            // Admin tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    document.querySelectorAll('.admin-tab').forEach(t => {
+                        t.classList.remove('active', 'text-primary', 'border-primary');
+                        t.classList.add('text-gray-500');
+                    });
+                    
+                    e.target.classList.add('active', 'text-primary', 'border-primary');
+                    e.target.classList.remove('text-gray-500');
+                });
+            });
+
+            // TODO: Implement business logic, API calls, and state management
+            // TODO: Add form validation
+            // TODO: Add authentication system
+            // TODO: Connect to backend database
+            // TODO: Add real-time updates
+        })();
+    </script>
+</body>
+</html>
