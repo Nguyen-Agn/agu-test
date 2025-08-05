@@ -17,10 +17,12 @@ interface MarketSession {
 }
 
 export default function Home() {
-  const { data: upcomingSession, isLoading } = useQuery({
+  const { data: upcomingSession, isLoading, error } = useQuery({
     queryKey: ["/api/upcoming-session"],
     queryFn: () => clientAPI.getUpcomingMarketSession(),
   });
+
+
 
   return (
     <div className="min-h-screen">

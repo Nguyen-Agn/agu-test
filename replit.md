@@ -8,6 +8,17 @@ This is a full-stack web application for a Vietnamese waste recycling program ca
 
 Preferred communication style: Simple, everyday language.
 Storage preference: LocalStorage instead of Firebase for static deployment compatibility.
+Admin account: username "admin", password "NoAdmin123"
+
+## Recent Changes
+
+### Market Session Management (August 2025)
+- Added complete market session management system with LocalStorage
+- Created admin interface with tabs for students and market sessions
+- Implemented create, edit, delete functionality for market sessions
+- Fixed home page to display upcoming market sessions
+- Removed demo account hints from login page
+- All market session data persists in browser LocalStorage
 
 ## System Architecture
 

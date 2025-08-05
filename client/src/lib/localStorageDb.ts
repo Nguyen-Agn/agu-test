@@ -54,7 +54,20 @@ export class LocalStorageDB {
       localStorage.setItem(STORAGE_KEYS.transactions, JSON.stringify([]));
     }
     if (!localStorage.getItem(STORAGE_KEYS.marketSessions)) {
-      localStorage.setItem(STORAGE_KEYS.marketSessions, JSON.stringify([]));
+      // Initialize default market session - set for future date
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 7); // 7 days from now
+      
+      const defaultSessions: MarketSession[] = [{
+        id: 1,
+        title: "Phiên Chợ Xanh Tuần Tới",
+        date: futureDate,
+        location: "Sân trước thư viện trường",
+        timeSlot: "8:00 - 17:00",
+        wasteTypes: "Giấy, nhựa, kim loại, chai lọ",
+        gifts: "Cây xanh, túi vải, đồ dùng học tập"
+      }];
+      localStorage.setItem(STORAGE_KEYS.marketSessions, JSON.stringify(defaultSessions));
     }
     if (!localStorage.getItem(STORAGE_KEYS.admins)) {
       // Initialize with default admin
@@ -64,18 +77,6 @@ export class LocalStorageDB {
         password: "NoAdmin123"
       }];
       localStorage.setItem(STORAGE_KEYS.admins, JSON.stringify(defaultAdmins));
-
-      // Initialize default market session
-      const defaultSessions: MarketSession[] = [{
-        id: 1,
-        title: "Phiên chợ tháng 12",
-        date: new Date("2024-12-25T08:00:00Z"),
-        location: "Sân trước thư viện trường",
-        timeSlot: "8:00 - 17:00",
-        wasteTypes: "Giấy, nhựa, kim loại",
-        gifts: "Cây xanh, túi vải"
-      }];
-      localStorage.setItem(STORAGE_KEYS.marketSessions, JSON.stringify(defaultSessions));
     }
   }
 

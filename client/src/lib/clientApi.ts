@@ -199,6 +199,7 @@ export const clientAPI = {
   async getUpcomingMarketSession(): Promise<MarketSession | null> {
     const sessions = await this.getMarketSessions();
     const now = new Date();
+    
     const upcoming = sessions
       .filter(session => new Date(session.date) > now)
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
