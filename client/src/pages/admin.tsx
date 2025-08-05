@@ -32,8 +32,10 @@ export default function Admin() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: students, isLoading } = useQuery<Student[]>({
+  const { data: students, isLoading, error } = useQuery<Student[]>({
     queryKey: ["/api/admin/students"],
+    retry: 1,
+    staleTime: 0, // Always fetch fresh data
   });
 
   const {
@@ -113,6 +115,25 @@ export default function Admin() {
           <div className="animate-pulse space-y-6">
             <div className="h-8 bg-gray-200 rounded w-1/3"></div>
             <div className="h-64 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen py-12">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold text-red-600">Lỗi tải dữ liệu</h2>
+            <p className="text-gray-600 mt-2">Vui lòng đăng nhập lại hoặc làm mới trang</p>
+            <Button 
+              onClick={() => queryClient.invalidateQueries({ queryKey: ["/api/admin/students"] })}
+              className="mt-4"
+            >
+              Thử lại
+            </Button>
           </div>
         </div>
       </div>

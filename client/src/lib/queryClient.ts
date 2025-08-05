@@ -1,5 +1,6 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 import { clientAPI } from "./clientApi";
+import type { InsertTransaction, InsertMarketSession } from "@shared/schema";
 
 // Client-side query function that uses LocalStorage instead of server
 export const getQueryFn: (options: {
@@ -25,10 +26,11 @@ export const getQueryFn: (options: {
           return clientAPI.getStudentDashboard();
           
         case '/api/admin/students':
-          return clientAPI.getAllStudents();
+          return clientAPI.getStudents();
           
         case '/api/admin/transactions':
-          return clientAPI.getAllTransactions();
+          // Admin transactions endpoint not implemented yet
+          return [];
           
         case '/api/market-sessions':
           return clientAPI.getMarketSessions();
@@ -72,13 +74,13 @@ export async function apiRequest(
         
       case '/api/admin/transactions':
         if (method === 'POST') {
-          return clientAPI.createTransaction(data);
+          return clientAPI.createTransaction(data as InsertTransaction);
         }
         break;
         
       case '/api/admin/market-sessions':
         if (method === 'POST') {
-          return clientAPI.createMarketSession(data);
+          return clientAPI.createMarketSession(data as InsertMarketSession);
         }
         break;
         
@@ -86,7 +88,7 @@ export async function apiRequest(
         // Handle dynamic URLs like /api/admin/market-sessions/:id
         if (url.startsWith('/api/admin/market-sessions/') && method === 'PATCH') {
           const id = parseInt(url.split('/').pop() || '0');
-          return clientAPI.updateMarketSession(id, data);
+          return clientAPI.updateMarketSession(id, data as Partial<InsertMarketSession>);
         }
         if (url.startsWith('/api/admin/market-sessions/') && method === 'DELETE') {
           const id = parseInt(url.split('/').pop() || '0');
