@@ -82,7 +82,7 @@ export default function Login() {
                 <Input
                   id="identifier"
                   {...register("identifier")}
-                  placeholder="Nhập MSSV hoặc username admin"
+                  placeholder="Nhập MSSV hoặc username"
                   className="w-full"
                 />
                 {errors.identifier && (
@@ -124,10 +124,7 @@ export default function Login() {
               </p>
             </div>
             
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
-              <strong>Tài khoản demo:</strong><br />
-              Admin: username "admin", password "admin123"
-            </div>
+
           </CardContent>
         </Card>
       </div>
