@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-// Build script optimized for Vercel deployment
+// Build script optimized for Netlify deployment
 import { build } from 'vite';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
 async function buildProject() {
-  console.log('🚀 Starting Vercel-optimized build...');
+  console.log('🚀 Starting Netlify-optimized build...');
   
   try {
     // 1. Clean dist directory
@@ -63,8 +63,13 @@ async function buildProject() {
     const indexHtml = fs.readFileSync('dist/public/index.html', 'utf8');
     fs.writeFileSync('dist/public/404.html', indexHtml);
 
+    // 6. Copy Netlify redirects config
+    if (fs.existsSync('_redirects')) {
+      fs.copyFileSync('_redirects', 'dist/public/_redirects');
+    }
+
     console.log('✅ Build completed successfully!');
-    console.log('📁 Output: dist/ directory ready for Vercel');
+    console.log('📁 Output: dist/ directory ready for Netlify');
     
   } catch (error) {
     console.error('❌ Build failed:', error);
