@@ -13,7 +13,7 @@ async function buildProject() {
       fs.rmSync('dist', { recursive: true, force: true });
     }
 
-    // Build frontend only - Vercel will handle API functions separately
+    // Build frontend with Vite directly to dist/
     console.log('📦 Building frontend...');
     await build({
       root: './client',
@@ -22,7 +22,6 @@ async function buildProject() {
         emptyOutDir: true,
         rollupOptions: {
           onwarn(warning, warn) {
-            // Suppress resolve warnings for alias imports
             if (warning.code === 'UNRESOLVED_IMPORT') return;
             warn(warning);
           }
@@ -30,9 +29,20 @@ async function buildProject() {
       }
     });
 
+    // Move files from dist/public to dist/ if they exist
+    if (fs.existsSync('dist/public')) {
+      const files = fs.readdirSync('dist/public');
+      files.forEach(file => {
+        fs.renameSync(`dist/public/${file}`, `dist/${file}`);
+      });
+      fs.rmSync('dist/public', { recursive: true });
+    }
+
     // Create 404.html for SPA routing
-    const indexHtml = fs.readFileSync('dist/index.html', 'utf8');
-    fs.writeFileSync('dist/404.html', indexHtml);
+    if (fs.existsSync('dist/index.html')) {
+      const indexHtml = fs.readFileSync('dist/index.html', 'utf8');
+      fs.writeFileSync('dist/404.html', indexHtml);
+    }
 
     console.log('✅ Frontend build completed!');
     console.log('📁 Frontend: dist/ directory');
