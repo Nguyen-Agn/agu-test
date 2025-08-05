@@ -4,7 +4,7 @@
   "outputDirectory": "dist",
   "functions": {
     "api/*.js": {
-      "runtime": "@vercel/node@18.18.0",
+      "runtime": "@vercel/node@3.0.0",
       "maxDuration": 30
     }
   },
@@ -14,12 +14,8 @@
       "dest": "/api/index.js"
     },
     {
-      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
-      "dest": "/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/$1"
     }
   ]
 }
