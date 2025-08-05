@@ -54,6 +54,13 @@ class SessionManager {
         });
         return session;
       }
+      
+      // Also check for legacy sessionId
+      const legacySessionId = localStorage.getItem('sessionId');
+      if (legacySessionId) {
+        // Clean up legacy sessionId
+        localStorage.removeItem('sessionId');
+      }
     } catch (error) {
       console.error('Error loading session:', error);
     }
@@ -132,7 +139,7 @@ export const clientAPI = {
   },
 
   // Student operations
-  async getStudentDashboard(): Promise<{ student: Student; transactions: any[]; totalPoints: number }> {
+  async getStudentDashboard(): Promise<{ student: Student; transactions: any[]; stats: { totalWeight: string; giftsReceived: number } }> {
     const session = sessionManager.getCurrentSession();
     if (!session || session.isAdmin) {
       throw new Error('Unauthorized');
@@ -144,10 +151,18 @@ export const clientAPI = {
     }
 
     const transactions = await clientStorage.getTransactionsByStudentId(student.id);
+    
+    // Calculate stats
+    const totalWeight = transactions.reduce((sum, t) => sum + parseFloat(t.weight || '0'), 0).toFixed(2);
+    const giftsReceived = transactions.filter(t => t.gift && t.gift.trim() !== '').length;
+    
     return {
       student,
       transactions,
-      totalPoints: student.totalPoints
+      stats: {
+        totalWeight,
+        giftsReceived
+      }
     };
   },
 

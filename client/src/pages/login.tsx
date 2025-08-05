@@ -27,10 +27,19 @@ export default function Login() {
   const loginMutation = useMutation({
     mutationFn: (data: LoginData) => apiRequest("POST", "/api/login", data),
     onSuccess: (result) => {
-      // Store session ID
+      // Store session ID in the way sessionManager expects
       localStorage.setItem("sessionId", result.sessionId);
-      // Set up query cache
-      queryClient.setQueryData(["/api/me"], result);
+      
+      // Set user data for cache - need to format properly for navbar
+      if (result.isAdmin) {
+        queryClient.setQueryData(["/api/me"], { 
+          isAdmin: true, 
+          admin: { username: "admin" } 
+        });
+      } else {
+        // Need to get student data for proper cache
+        queryClient.invalidateQueries({ queryKey: ["/api/me"] });
+      }
       
       toast({
         title: "Đăng nhập thành công!",

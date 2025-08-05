@@ -32,6 +32,7 @@ export default function Navbar() {
     onSuccess: () => {
       // Clear session storage
       localStorage.removeItem("sessionId");
+      localStorage.removeItem("currentSession");
       // Invalidate queries
       queryClient.clear();
       // Redirect to home
