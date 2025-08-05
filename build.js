@@ -44,6 +44,22 @@ async function buildProject() {
       fs.writeFileSync('dist/404.html', indexHtml);
     }
 
+    // Move dist files to public/ for Vercel
+    if (!fs.existsSync('public')) {
+      fs.mkdirSync('public');
+    }
+    
+    const files = fs.readdirSync('dist');
+    files.forEach(file => {
+      const srcPath = `dist/${file}`;
+      const destPath = `public/${file}`;
+      if (fs.statSync(srcPath).isDirectory()) {
+        fs.cpSync(srcPath, destPath, { recursive: true });
+      } else {
+        fs.copyFileSync(srcPath, destPath);
+      }
+    });
+
     console.log('✅ Frontend build completed!');
     console.log('📁 Frontend: dist/ directory');
     console.log('🔧 API: api/ functions for Vercel');
