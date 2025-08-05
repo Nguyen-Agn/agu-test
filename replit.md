@@ -7,18 +7,18 @@ This is a full-stack web application for a Vietnamese waste recycling program ca
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Storage preference: LocalStorage instead of Firebase for static deployment compatibility.
+Storage preference: PostgreSQL database for real-time data synchronization across devices.
 Admin account: username "admin", password "NoAdmin123"
 
 ## Recent Changes
 
-### Market Session Management (August 2025)
-- Added complete market session management system with LocalStorage
-- Created admin interface with tabs for students and market sessions
-- Implemented create, edit, delete functionality for market sessions
-- Fixed home page to display upcoming market sessions
-- Removed demo account hints from login page
-- All market session data persists in browser LocalStorage
+### Database Migration (August 2025)
+- Migrated from LocalStorage to PostgreSQL database for proper data synchronization
+- Replaced client-side storage with server API endpoints
+- Added database schema with Drizzle ORM
+- Implemented complete CRUD operations for all entities
+- Removed Firebase and LocalStorage dependencies
+- All data now syncs in real-time across multiple devices and users
 
 ## System Architecture
 
@@ -38,16 +38,16 @@ Admin account: username "admin", password "NoAdmin123"
 - **Development**: Hot module replacement via Vite integration
 
 ### Data Storage Solutions
-- **Current**: LocalStorage for static deployment compatibility
-- **Previous**: Firebase Firestore integration (replaced for cost reasons)
+- **Current**: PostgreSQL database with Drizzle ORM
+- **Previous**: LocalStorage (replaced for data synchronization)
 - **Schema Location**: Shared schema definitions in `/shared/schema.ts`
-- **LocalStorage Implementation**: 
-  - Auto-increment IDs with counters
-  - JSON serialization for complex data
-  - Automatic backup/restore functionality
-  - Data persistence across browser sessions
-- **Collections**: students, transactions, market_sessions, admins
-- **Backup System**: Export/import JSON files for data protection
+- **Database Implementation**: 
+  - Auto-increment primary keys
+  - Proper relational structure
+  - Real-time data synchronization
+  - ACID transactions for data integrity
+- **Tables**: students, transactions, market_sessions, admins
+- **Deployment**: Compatible with Vercel and other cloud platforms
 
 ## Key Components
 

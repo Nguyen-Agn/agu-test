@@ -17,7 +17,7 @@ export const transactions = pgTable("transactions", {
   id: serial("id").primaryKey(),
   studentId: integer("student_id").notNull().references(() => students.id),
   wasteType: text("waste_type").notNull(),
-  weight: decimal("weight", { precision: 5, scale: 2 }).notNull(),
+  weight: text("weight").notNull(),
   points: integer("points").notNull(),
   gift: text("gift"),
   date: timestamp("date").notNull().defaultNow(),

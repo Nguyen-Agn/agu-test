@@ -1,245 +1,201 @@
-import { clientStorage } from './clientStorage';
 import { LoginData, Student, InsertStudent, Admin, MarketSession, InsertMarketSession, Transaction, InsertTransaction } from '@shared/schema';
 
-// Session management
-export interface Session {
-  sessionId: string;
-  userId: number;
-  isAdmin: boolean;
-  username?: string;
-  createdAt: Date;
-}
-
-class SessionManager {
-  private sessions: Map<string, Session> = new Map();
-
-  generateSessionId(): string {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  }
-
-  createSession(userId: number, isAdmin: boolean, username?: string): string {
-    const sessionId = this.generateSessionId();
-    this.sessions.set(sessionId, {
-      sessionId,
-      userId,
-      isAdmin,
-      username,
-      createdAt: new Date()
+// Client API for communicating with the server
+export const clientAPI = {
+  // Session management
+  async login(credentials: LoginData) {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Session-ID': localStorage.getItem('sessionId') || '',
+      },
+      body: JSON.stringify(credentials),
     });
     
-    // Store in localStorage for persistence
-    localStorage.setItem('currentSession', JSON.stringify({
-      sessionId,
-      userId,
-      isAdmin,
-      username
-    }));
-    
-    return sessionId;
-  }
-
-  getSession(sessionId: string): Session | undefined {
-    return this.sessions.get(sessionId);
-  }
-
-  getCurrentSession(): Session | null {
-    try {
-      const stored = localStorage.getItem('currentSession');
-      if (stored) {
-        const session = JSON.parse(stored);
-        // Recreate session in memory
-        this.sessions.set(session.sessionId, {
-          ...session,
-          createdAt: new Date()
-        });
-        return session;
-      }
-      
-      // Also check for legacy sessionId
-      const legacySessionId = localStorage.getItem('sessionId');
-      if (legacySessionId) {
-        // Clean up legacy sessionId
-        localStorage.removeItem('sessionId');
-      }
-    } catch (error) {
-      console.error('Error loading session:', error);
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Login failed');
     }
-    return null;
-  }
+    
+    const data = await response.json();
+    if (data.sessionId) {
+      localStorage.setItem('sessionId', data.sessionId);
+    }
+    
+    return data;
+  },
 
-  destroySession(sessionId: string): void {
-    this.sessions.delete(sessionId);
-    localStorage.removeItem('currentSession');
+  async register(studentData: InsertStudent) {
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(studentData),
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Registration failed');
+    }
+    
+    const data = await response.json();
+    if (data.sessionId) {
+      localStorage.setItem('sessionId', data.sessionId);
+    }
+    
+    return data;
+  },
+
+  async logout() {
+    const response = await fetch('/api/logout', {
+      method: 'POST',
+      headers: {
+        'X-Session-ID': localStorage.getItem('sessionId') || '',
+      },
+    });
+    
     localStorage.removeItem('sessionId');
-  }
-}
+    return response.ok;
+  },
 
-const sessionManager = new SessionManager();
-
-// Client-side API functions that simulate server endpoints
-export const clientAPI = {
-  // Authentication
-  async login(loginData: LoginData): Promise<{ isAdmin: boolean; sessionId: string }> {
-    const { identifier, password } = loginData;
+  async getCurrentUser() {
+    const response = await fetch('/api/me', {
+      headers: {
+        'X-Session-ID': localStorage.getItem('sessionId') || '',
+      },
+    });
     
-    // Try admin login first
-    const admin = await clientStorage.getAdminByUsername(identifier);
-    if (admin && admin.password === password) {
-      const sessionId = sessionManager.createSession(admin.id, true, admin.username);
-      return { isAdmin: true, sessionId };
+    if (!response.ok) {
+      throw new Error('Not authenticated');
     }
-
-    // Try student login
-    const student = await clientStorage.getStudentByStudentId(identifier) || 
-                   await clientStorage.getStudentByEmail(identifier);
-    if (student && student.password === password) {
-      const sessionId = sessionManager.createSession(student.id, false);
-      return { isAdmin: false, sessionId };
-    }
-
-    throw new Error('Thông tin đăng nhập không chính xác');
-  },
-
-  async logout(): Promise<{ success: boolean }> {
-    const session = sessionManager.getCurrentSession();
-    if (session) {
-      sessionManager.destroySession(session.sessionId);
-    }
-    return { success: true };
-  },
-
-  async register(studentData: InsertStudent): Promise<Student> {
-    // Check if student ID or email already exists
-    const existingByStudentId = await clientStorage.getStudentByStudentId(studentData.studentId);
-    if (existingByStudentId) {
-      throw new Error('MSSV đã tồn tại');
-    }
-
-    const existingByEmail = await clientStorage.getStudentByEmail(studentData.email);
-    if (existingByEmail) {
-      throw new Error('Email đã tồn tại');
-    }
-
-    return clientStorage.createStudent(studentData);
-  },
-
-  async getCurrentUser(): Promise<{ student?: Student; admin?: Admin; isAdmin: boolean } | null> {
-    const session = sessionManager.getCurrentSession();
-    if (!session) {
-      return null;
-    }
-
-    if (session.isAdmin) {
-      const admin = await clientStorage.getAdminByUsername(session.username || '');
-      return admin ? { admin, isAdmin: true } : null;
-    } else {
-      const student = await clientStorage.getStudent(session.userId);
-      return student ? { student, isAdmin: false } : null;
-    }
+    
+    return response.json();
   },
 
   // Student operations
-  async getStudentDashboard(): Promise<{ student: Student; transactions: any[]; stats: { totalWeight: string; giftsReceived: number } }> {
-    const session = sessionManager.getCurrentSession();
-    if (!session || session.isAdmin) {
-      throw new Error('Unauthorized');
-    }
-
-    const student = await clientStorage.getStudent(session.userId);
-    if (!student) {
-      throw new Error('Student not found');
-    }
-
-    const transactions = await clientStorage.getTransactionsByStudentId(student.id);
+  async getStudentDashboard() {
+    const response = await fetch('/api/student/dashboard', {
+      headers: {
+        'X-Session-ID': localStorage.getItem('sessionId') || '',
+      },
+    });
     
-    // Calculate stats
-    const totalWeight = transactions.reduce((sum, t) => sum + parseFloat(t.weight || '0'), 0).toFixed(2);
-    const giftsReceived = transactions.filter(t => t.gift && t.gift.trim() !== '').length;
+    if (!response.ok) {
+      throw new Error('Failed to fetch dashboard');
+    }
     
-    return {
-      student,
-      transactions,
-      stats: {
-        totalWeight,
-        giftsReceived
-      }
-    };
+    return response.json();
   },
 
-  // Admin operations
-  async getAllStudents(): Promise<Student[]> {
-    const session = sessionManager.getCurrentSession();
-    if (!session || !session.isAdmin) {
-      throw new Error('Admin access required');
-    }
-    return clientStorage.getAllStudents();
-  },
-
-  async getAllTransactions(): Promise<any[]> {
-    const session = sessionManager.getCurrentSession();
-    if (!session || !session.isAdmin) {
-      throw new Error('Admin access required');
-    }
-    return clientStorage.getAllTransactions();
-  },
-
-  async createTransaction(transactionData: any): Promise<any> {
-    const session = sessionManager.getCurrentSession();
-    if (!session || !session.isAdmin) {
-      throw new Error('Admin access required');
-    }
-    return clientStorage.createTransaction(transactionData);
-  },
-
-  // Market sessions
+  // Market session operations
   async getMarketSessions(): Promise<MarketSession[]> {
-    return clientStorage.getAllMarketSessions();
+    const response = await fetch('/api/market-sessions');
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch market sessions');
+    }
+    
+    return response.json();
   },
 
   async getUpcomingMarketSession(): Promise<MarketSession | null> {
-    const sessions = await this.getMarketSessions();
-    const now = new Date();
+    const response = await fetch('/api/upcoming-session');
     
-    const upcoming = sessions
-      .filter(session => new Date(session.date) > now)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    if (!response.ok) {
+      throw new Error('Failed to fetch upcoming session');
+    }
     
-    return upcoming[0] || null;
+    return response.json();
+  },
+
+  // Admin operations
+  async getStudents(): Promise<Student[]> {
+    const response = await fetch('/api/admin/students', {
+      headers: {
+        'X-Session-ID': localStorage.getItem('sessionId') || '',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch students');
+    }
+    
+    return response.json();
+  },
+
+  async createTransaction(transactionData: InsertTransaction): Promise<Transaction> {
+    const response = await fetch('/api/admin/transactions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Session-ID': localStorage.getItem('sessionId') || '',
+      },
+      body: JSON.stringify(transactionData),
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to create transaction');
+    }
+    
+    return response.json();
+  },
+
+  async deleteStudent(id: number): Promise<boolean> {
+    const response = await fetch(`/api/admin/students/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'X-Session-ID': localStorage.getItem('sessionId') || '',
+      },
+    });
+    
+    return response.ok;
   },
 
   async createMarketSession(sessionData: InsertMarketSession): Promise<MarketSession> {
-    const session = sessionManager.getCurrentSession();
-    if (!session || !session.isAdmin) {
-      throw new Error('Admin access required');
+    const response = await fetch('/api/admin/market-sessions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Session-ID': localStorage.getItem('sessionId') || '',
+      },
+      body: JSON.stringify(sessionData),
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to create market session');
     }
-    return clientStorage.createMarketSession(sessionData);
+    
+    return response.json();
   },
 
-  async updateMarketSession(id: number, updates: Partial<MarketSession>): Promise<MarketSession | undefined> {
-    const session = sessionManager.getCurrentSession();
-    if (!session || !session.isAdmin) {
-      throw new Error('Admin access required');
+  async updateMarketSession(id: number, updates: Partial<MarketSession>): Promise<MarketSession> {
+    const response = await fetch(`/api/admin/market-sessions/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Session-ID': localStorage.getItem('sessionId') || '',
+      },
+      body: JSON.stringify(updates),
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to update market session');
     }
-    return clientStorage.updateMarketSession(id, updates);
+    
+    return response.json();
   },
 
   async deleteMarketSession(id: number): Promise<boolean> {
-    const session = sessionManager.getCurrentSession();
-    if (!session || !session.isAdmin) {
-      throw new Error('Admin access required');
-    }
-    return clientStorage.deleteMarketSession(id);
-  }
-};
-
-// Helper function to check authentication status
-export const checkAuth = (): boolean => {
-  const session = sessionManager.getCurrentSession();
-  return session !== null;
-};
-
-// Helper function to check admin status
-export const checkAdminAuth = (): boolean => {
-  const session = sessionManager.getCurrentSession();
-  return session !== null && session.isAdmin;
+    const response = await fetch(`/api/admin/market-sessions/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'X-Session-ID': localStorage.getItem('sessionId') || '',
+      },
+    });
+    
+    return response.ok;
+  },
 };

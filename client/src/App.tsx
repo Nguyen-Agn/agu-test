@@ -10,7 +10,7 @@ import Register from "@/pages/register";
 import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
 import Admin from "@/pages/admin";
-import DataManagement from "@/pages/data-management";
+// Removed DataManagement - no longer needed with server API
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -23,7 +23,7 @@ function Router() {
         <Route path="/login" component={Login} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/admin" component={Admin} />
-        <Route path="/data-management" component={DataManagement} />
+        {/* Removed data management route - no longer needed with server API */}
         <Route component={NotFound} />
       </Switch>
     </div>

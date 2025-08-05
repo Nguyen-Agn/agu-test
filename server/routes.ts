@@ -165,8 +165,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get market sessions
   app.get("/api/market-sessions", async (req: Request, res: Response) => {
-    const sessions = await storage.getAllMarketSessions();
-    res.json(sessions);
+    try {
+      const sessions = await storage.getAllMarketSessions();
+      res.json(sessions);
+    } catch (error) {
+      res.status(500).json({ message: "Lỗi server" });
+    }
+  });
+
+  // Get upcoming market session
+  app.get("/api/upcoming-session", async (req: Request, res: Response) => {
+    try {
+      const session = await storage.getUpcomingMarketSession();
+      res.json(session);
+    } catch (error) {
+      res.status(500).json({ message: "Lỗi server" });
+    }
+  });
+
+  // Admin market session routes
+  app.post("/api/admin/market-sessions", async (req: Request, res: Response) => {
+    const session = (req as any).session as Session;
+    if (!session?.isAdmin) {
+      return res.status(403).json({ message: "Không có quyền truy cập" });
+    }
+    
+    try {
+      const sessionData = req.body;
+      const newSession = await storage.createMarketSession(sessionData);
+      res.json(newSession);
+    } catch (error) {
+      res.status(500).json({ message: "Lỗi server" });
+    }
+  });
+
+  app.put("/api/admin/market-sessions/:id", async (req: Request, res: Response) => {
+    const session = (req as any).session as Session;
+    if (!session?.isAdmin) {
+      return res.status(403).json({ message: "Không có quyền truy cập" });
+    }
+    
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedSession = await storage.updateMarketSession(id, updates);
+      if (!updatedSession) {
+        return res.status(404).json({ message: "Không tìm thấy phiên chợ" });
+      }
+      res.json(updatedSession);
+    } catch (error) {
+      res.status(500).json({ message: "Lỗi server" });
+    }
+  });
+
+  app.delete("/api/admin/market-sessions/:id", async (req: Request, res: Response) => {
+    const session = (req as any).session as Session;
+    if (!session?.isAdmin) {
+      return res.status(403).json({ message: "Không có quyền truy cập" });
+    }
+    
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteMarketSession(id);
+      if (!success) {
+        return res.status(404).json({ message: "Không tìm thấy phiên chợ" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Lỗi server" });
+    }
   });
 
   // Admin routes
