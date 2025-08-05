@@ -12,16 +12,25 @@ Admin account: username "admin", password "NoAdmin123"
 
 ## Recent Changes
 
-### Database Migration & Vercel Optimization (August 2025)
+### Vercel Serverless Architecture Migration (August 2025)
+- Restructured project for Vercel serverless functions compatibility
+- Separated frontend (static build) from API (serverless functions)
+- Created dedicated `api/` directory with Express.js serverless functions
+- Updated `vercel.json` to use functions instead of builds
+- Eliminated monolithic server architecture that caused Vercel deployment issues
+- Frontend builds to `dist/` directory for static hosting
+- API functions handle all backend logic with database connections
+- Added proper CORS configuration for production deployment
+- Updated build process to be Vercel-compatible
+- Created comprehensive Vercel deployment documentation
+
+### Database Migration & Core Features (August 2025)
 - Migrated from LocalStorage to PostgreSQL database for proper data synchronization
 - Replaced client-side storage with server API endpoints
 - Added database schema with Drizzle ORM
 - Implemented complete CRUD operations for all entities
 - Removed Firebase and LocalStorage dependencies
 - All data now syncs in real-time across multiple devices and users
-- Optimized for Vercel deployment with custom build script and routing
-- Removed unnecessary admin data management features
-- Added comprehensive deployment documentation and checklist
 
 ## System Architecture
 
