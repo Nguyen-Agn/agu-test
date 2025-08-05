@@ -18,22 +18,38 @@
 
 ### 1. Thiết lập database
 
-- Tạo PostgreSQL database trên provider bạn chọn
+- Tạo PostgreSQL database trên provider bạn chọn (khuyến nghị Neon hoặc Vercel Postgres)
 - Lấy connection string (DATABASE_URL)
 - Chạy migrations để tạo tables:
   ```bash
   npm run db:push
   ```
 
-### 2. Deploy lên Vercel
+### 2. Build project cục bộ (khuyến nghị)
 
+```bash
+# Tạo build tối ưu
+node build.js
+
+# Kiểm tra build
+ls -la dist/
+```
+
+### 3. Deploy lên Vercel
+
+**Phương pháp A: Qua GitHub (khuyến nghị)**
 1. Push code lên GitHub repository
 2. Vào Vercel Dashboard và import project
 3. Thiết lập Environment Variables:
    - `DATABASE_URL`: Connection string của database
    - `NODE_ENV`: `production`
+4. Deploy sẽ tự động chạy với `vercel.json` config
 
-4. Deploy sẽ tự động chạy
+**Phương pháp B: Vercel CLI**
+```bash
+npm i -g vercel
+vercel --prod
+```
 
 ### 3. Khởi tạo dữ liệu admin
 

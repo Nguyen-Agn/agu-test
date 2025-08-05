@@ -12,13 +12,16 @@ Admin account: username "admin", password "NoAdmin123"
 
 ## Recent Changes
 
-### Database Migration (August 2025)
+### Database Migration & Vercel Optimization (August 2025)
 - Migrated from LocalStorage to PostgreSQL database for proper data synchronization
 - Replaced client-side storage with server API endpoints
 - Added database schema with Drizzle ORM
 - Implemented complete CRUD operations for all entities
 - Removed Firebase and LocalStorage dependencies
 - All data now syncs in real-time across multiple devices and users
+- Optimized for Vercel deployment with custom build script and routing
+- Removed unnecessary admin data management features
+- Added comprehensive deployment documentation and checklist
 
 ## System Architecture
 

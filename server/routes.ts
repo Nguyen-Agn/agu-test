@@ -192,9 +192,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     try {
       const sessionData = req.body;
+      
+      // Validate required fields
+      if (!sessionData.title || !sessionData.date || !sessionData.location || 
+          !sessionData.timeSlot || !sessionData.wasteTypes || !sessionData.gifts) {
+        return res.status(400).json({ 
+          message: "Thiếu thông tin bắt buộc" 
+        });
+      }
+
+      // Ensure date is a valid Date object
+      if (typeof sessionData.date === 'string') {
+        sessionData.date = new Date(sessionData.date);
+      }
+
       const newSession = await storage.createMarketSession(sessionData);
       res.json(newSession);
     } catch (error) {
+      console.error('Create market session error:', error);
       res.status(500).json({ message: "Lỗi server" });
     }
   });
@@ -208,12 +223,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const updates = req.body;
+      
+      // Ensure date is a valid Date object if provided
+      if (updates.date && typeof updates.date === 'string') {
+        updates.date = new Date(updates.date);
+      }
+
       const updatedSession = await storage.updateMarketSession(id, updates);
       if (!updatedSession) {
         return res.status(404).json({ message: "Không tìm thấy phiên chợ" });
       }
       res.json(updatedSession);
     } catch (error) {
+      console.error('Update market session error:', error);
       res.status(500).json({ message: "Lỗi server" });
     }
   });

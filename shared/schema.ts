@@ -58,8 +58,8 @@ export const insertAdminSchema = createInsertSchema(admins).omit({
 });
 
 export const loginSchema = z.object({
-  identifier: z.string().min(1, "Vui lòng nhập MSSV hoặc username"),
-  password: z.string().min(1, "Vui lòng nhập mật khẩu"),
+  identifier: z.string().min(1, "Vui lòng nhập MSSV hoặc username").max(50),
+  password: z.string().min(1, "Vui lòng nhập mật khẩu").max(100),
 });
 
 export type Student = typeof students.$inferSelect;
