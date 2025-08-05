@@ -136,6 +136,19 @@ export default function BackupRestore() {
               <Download className="h-4 w-4 mr-2" />
               Tải xuống backup
             </Button>
+            <Button 
+              onClick={() => {
+                localDB.resetAdminPassword();
+                toast({
+                  title: "Reset mật khẩu admin thành công",
+                  description: "Username: admin, Password: NoAdmin123",
+                });
+              }} 
+              variant="outline" 
+              className="w-full"
+            >
+              Reset mật khẩu admin
+            </Button>
           </CardContent>
         </Card>
 

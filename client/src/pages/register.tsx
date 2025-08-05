@@ -38,24 +38,17 @@ export default function Register() {
 
   const registerMutation = useMutation({
     mutationFn: (data: InsertStudent) => apiRequest("POST", "/api/register", data),
-    onSuccess: async (response) => {
-      const result = await response.json();
-      // Store session ID
-      localStorage.setItem("sessionId", result.sessionId);
-      // Set up API requests to include session ID
-      queryClient.setQueryData(["/api/me"], { student: result.student });
-      
+    onSuccess: (result) => {
       toast({
         title: "Đăng ký thành công!",
         description: "Chào mừng bạn đến với Chợ Xanh!",
       });
-      setLocation("/dashboard");
+      setLocation("/login");
     },
-    onError: async (error: any) => {
-      const errorResponse = await error.response?.json();
+    onError: (error: any) => {
       toast({
         title: "Đăng ký thất bại",
-        description: errorResponse?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        description: error.message || "Có lỗi xảy ra, vui lòng thử lại",
         variant: "destructive",
       });
     },

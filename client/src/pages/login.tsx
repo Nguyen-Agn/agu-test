@@ -26,8 +26,7 @@ export default function Login() {
 
   const loginMutation = useMutation({
     mutationFn: (data: LoginData) => apiRequest("POST", "/api/login", data),
-    onSuccess: async (response) => {
-      const result = await response.json();
+    onSuccess: (result) => {
       // Store session ID
       localStorage.setItem("sessionId", result.sessionId);
       // Set up query cache
@@ -43,11 +42,10 @@ export default function Login() {
         setLocation("/dashboard");
       }
     },
-    onError: async (error: any) => {
-      const errorResponse = await error.response?.json();
+    onError: (error: any) => {
       toast({
         title: "Đăng nhập thất bại",
-        description: errorResponse?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        description: error.message || "Có lỗi xảy ra, vui lòng thử lại",
         variant: "destructive",
       });
     },

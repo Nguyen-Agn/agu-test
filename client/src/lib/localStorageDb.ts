@@ -61,7 +61,7 @@ export class LocalStorageDB {
       const defaultAdmins: Admin[] = [{
         id: 1,
         username: "admin",
-        password: "admin123"
+        password: "NoAdmin123"
       }];
       localStorage.setItem(STORAGE_KEYS.admins, JSON.stringify(defaultAdmins));
 
@@ -298,6 +298,15 @@ export class LocalStorageDB {
       localStorage.removeItem(key);
     });
     this.initializeData();
+  }
+
+  resetAdminPassword(): void {
+    const defaultAdmins: Admin[] = [{
+      id: 1,
+      username: "admin",
+      password: "NoAdmin123"
+    }];
+    localStorage.setItem(STORAGE_KEYS.admins, JSON.stringify(defaultAdmins));
   }
 
   getLastBackupDate(): Date | null {

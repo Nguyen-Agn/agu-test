@@ -10,7 +10,11 @@ interface User {
     fullName: string;
     studentId: string;
   };
-  isAdmin?: boolean;
+  admin?: {
+    id: number;
+    username: string;
+  };
+  isAdmin: boolean;
 }
 
 export default function Navbar() {
@@ -87,9 +91,9 @@ export default function Navbar() {
                         {user.student.fullName}
                       </span>
                     )}
-                    {user.isAdmin && (
+                    {user.isAdmin && user.admin && (
                       <span className="text-sm text-gray-600">
-                        Admin
+                        Admin ({user.admin.username})
                       </span>
                     )}
                     <Button
