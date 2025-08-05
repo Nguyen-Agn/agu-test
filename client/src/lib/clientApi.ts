@@ -1,5 +1,5 @@
 import { clientStorage } from './clientStorage';
-import { LoginData, Student, InsertStudent, Admin } from '@shared/schema';
+import { LoginData, Student, InsertStudent, Admin, MarketSession, InsertMarketSession, Transaction, InsertTransaction } from '@shared/schema';
 
 // Session management
 export interface Session {
@@ -192,11 +192,21 @@ export const clientAPI = {
   },
 
   // Market sessions
-  async getMarketSessions(): Promise<any[]> {
+  async getMarketSessions(): Promise<MarketSession[]> {
     return clientStorage.getAllMarketSessions();
   },
 
-  async createMarketSession(sessionData: any): Promise<any> {
+  async getUpcomingMarketSession(): Promise<MarketSession | null> {
+    const sessions = await this.getMarketSessions();
+    const now = new Date();
+    const upcoming = sessions
+      .filter(session => new Date(session.date) > now)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    
+    return upcoming[0] || null;
+  },
+
+  async createMarketSession(sessionData: InsertMarketSession): Promise<MarketSession> {
     const session = sessionManager.getCurrentSession();
     if (!session || !session.isAdmin) {
       throw new Error('Admin access required');
@@ -204,7 +214,7 @@ export const clientAPI = {
     return clientStorage.createMarketSession(sessionData);
   },
 
-  async updateMarketSession(id: number, updates: any): Promise<any> {
+  async updateMarketSession(id: number, updates: Partial<MarketSession>): Promise<MarketSession | undefined> {
     const session = sessionManager.getCurrentSession();
     if (!session || !session.isAdmin) {
       throw new Error('Admin access required');

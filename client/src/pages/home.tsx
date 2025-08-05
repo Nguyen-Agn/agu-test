@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { clientAPI } from "@/lib/clientApi";
 
 interface MarketSession {
   id: number;
@@ -16,11 +17,10 @@ interface MarketSession {
 }
 
 export default function Home() {
-  const { data: marketSessions, isLoading } = useQuery<MarketSession[]>({
-    queryKey: ["/api/market-sessions"],
+  const { data: upcomingSession, isLoading } = useQuery({
+    queryKey: ["/api/upcoming-session"],
+    queryFn: () => clientAPI.getUpcomingMarketSession(),
   });
-
-  const upcomingSession = marketSessions?.[0];
 
   return (
     <div className="min-h-screen">

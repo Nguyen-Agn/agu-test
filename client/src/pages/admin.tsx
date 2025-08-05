@@ -5,13 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertTransactionSchema, type InsertTransaction } from "@shared/schema";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Users, Calendar } from "lucide-react";
+import { MarketSessionManagement } from "@/components/admin/MarketSessionManagement";
 
 interface Student {
   id: number;
@@ -122,8 +124,22 @@ export default function Admin() {
       <div className="max-w-6xl mx-auto px-4">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Trang Quản Lý</h2>
-          <p className="text-gray-600">Quản lý sinh viên và điểm tích lũy</p>
+          <p className="text-gray-600">Quản lý sinh viên và phiên chợ</p>
         </div>
+
+        <Tabs defaultValue="students" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="students" className="flex items-center space-x-2">
+              <Users className="h-4 w-4" />
+              <span>Quản lý học sinh</span>
+            </TabsTrigger>
+            <TabsTrigger value="market-sessions" className="flex items-center space-x-2">
+              <Calendar className="h-4 w-4" />
+              <span>Quản lý phiên chợ</span>
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="students" className="space-y-6">
 
         <Card className="shadow-sm border mb-8">
           <div className="p-6">
@@ -297,6 +313,12 @@ export default function Admin() {
             </form>
           </DialogContent>
         </Dialog>
+          </TabsContent>
+          
+          <TabsContent value="market-sessions">
+            <MarketSessionManagement />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
