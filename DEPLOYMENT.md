@@ -55,12 +55,30 @@ VALUES ('Phiên Chợ Xanh Tuần Tới', NOW() + INTERVAL '7 days', 'Sân trư�
 
 ## Tính năng chính
 
-- ✅ Đồng bộ dữ liệu real-time
-- ✅ Hỗ trợ nhiều thiết bị
-- ✅ Database PostgreSQL
-- ✅ API endpoints hoàn chỉnh
-- ✅ Admin và student interfaces
-- ✅ Market session management
+- ✅ Đồng bộ dữ liệu real-time qua PostgreSQL
+- ✅ Hỗ trợ nhiều thiết bị và người dùng đồng thời
+- ✅ Authentication với session management
+- ✅ API endpoints RESTful hoàn chỉnh
+- ✅ Giao diện admin và student riêng biệt
+- ✅ Quản lý phiên chợ và giao dịch
+- ✅ Tự động tính điểm và thống kê
+
+## Khắc phục lỗi thường gặp
+
+### 1. Lỗi deployment trên Vercel
+- Đảm bảo `vercel.json` được cấu hình đúng
+- Kiểm tra environment variables đã được thiết lập
+- Build script phải có `vercel-build` command
+
+### 2. Lỗi kết nối database
+- Xác minh DATABASE_URL có đúng format không
+- Kiểm tra database có accessible từ Vercel không
+- Chạy migrations với `npm run db:push`
+
+### 3. Session không persist
+- Đảm bảo có middleware session trong server
+- Kiểm tra `X-Session-ID` header được gửi từ client
+- Xóa localStorage và thử đăng nhập lại
 
 ## Hỗ trợ
 

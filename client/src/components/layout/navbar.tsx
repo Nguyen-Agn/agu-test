@@ -51,8 +51,7 @@ export default function Navbar() {
     { path: "/", label: "Trang chủ" },
     ...(user?.student ? [{ path: "/dashboard", label: "Điểm của tôi" }] : []),
     ...(user?.isAdmin ? [
-      { path: "/admin", label: "Quản lý" },
-      { path: "/data-management", label: "Dữ liệu" }
+      { path: "/admin", label: "Quản lý" }
     ] : []),
   ];
 

@@ -118,7 +118,21 @@ export function MarketSessionManagement() {
     };
 
     if (editingSession) {
-      updateMutation.mutate({ id: editingSession.id, data: sessionData });
+      // For updates, only send changed fields
+      const updates: Partial<InsertMarketSession> = {};
+      if (data.title !== editingSession.title) updates.title = data.title;
+      if (data.location !== editingSession.location) updates.location = data.location;
+      if (data.timeSlot !== editingSession.timeSlot) updates.timeSlot = data.timeSlot;
+      if (data.wasteTypes !== editingSession.wasteTypes) updates.wasteTypes = data.wasteTypes;
+      if (data.gifts !== editingSession.gifts) updates.gifts = data.gifts;
+      
+      const newDate = new Date(data.date);
+      const existingDate = new Date(editingSession.date);
+      if (newDate.getTime() !== existingDate.getTime()) {
+        updates.date = newDate;
+      }
+
+      updateMutation.mutate({ id: editingSession.id, data: updates });
     } else {
       createMutation.mutate(sessionData);
     }

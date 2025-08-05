@@ -70,16 +70,17 @@ Admin account: username "admin", password "NoAdmin123"
 - `/api/me` - Current user information
 - `/api/student/dashboard` - Student data and statistics
 - `/api/admin/students` - Admin student management
-- `/api/admin/transactions` - Admin transaction management
+- `/api/admin/transactions` - Admin transaction management  
 - `/api/market-sessions` - Market session information
+- `/api/upcoming-session` - Get next upcoming market session
+- `/api/admin/market-sessions` - Admin market session CRUD operations
 
 ### Frontend Pages
 - **Home**: Landing page with program information and upcoming sessions
 - **Register**: Student registration form with validation
 - **Login**: Authentication for both students and admins
 - **Dashboard**: Student interface showing points and transaction history
-- **Admin**: Administrative interface for managing students and transactions
-- **Data Management**: Backup/restore interface for LocalStorage data (admin only)
+- **Admin**: Administrative interface for managing students, transactions, and market sessions
 
 ## Data Flow
 
