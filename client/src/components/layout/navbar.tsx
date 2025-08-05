@@ -45,7 +45,10 @@ export default function Navbar() {
   const navItems = [
     { path: "/", label: "Trang chủ" },
     ...(user?.student ? [{ path: "/dashboard", label: "Điểm của tôi" }] : []),
-    ...(user?.isAdmin ? [{ path: "/admin", label: "Quản lý" }] : []),
+    ...(user?.isAdmin ? [
+      { path: "/admin", label: "Quản lý" },
+      { path: "/data-management", label: "Dữ liệu" }
+    ] : []),
   ];
 
   return (

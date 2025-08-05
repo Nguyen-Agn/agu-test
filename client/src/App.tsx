@@ -10,6 +10,7 @@ import Register from "@/pages/register";
 import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
 import Admin from "@/pages/admin";
+import DataManagement from "@/pages/data-management";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -22,6 +23,7 @@ function Router() {
         <Route path="/login" component={Login} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/admin" component={Admin} />
+        <Route path="/data-management" component={DataManagement} />
         <Route component={NotFound} />
       </Switch>
     </div>
@@ -29,20 +31,7 @@ function Router() {
 }
 
 function App() {
-  useEffect(() => {
-    // Set up API request interceptor to include session ID
-    const originalFetch = window.fetch;
-    window.fetch = function(input, init = {}) {
-      const sessionId = localStorage.getItem("sessionId");
-      if (sessionId) {
-        init.headers = {
-          ...init.headers,
-          "x-session-id": sessionId,
-        };
-      }
-      return originalFetch(input, init);
-    };
-  }, []);
+  // No longer need to intercept fetch requests since we're using LocalStorage
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -7,6 +7,7 @@ This is a full-stack web application for a Vietnamese waste recycling program ca
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Storage preference: LocalStorage instead of Firebase for static deployment compatibility.
 
 ## System Architecture
 
@@ -26,12 +27,16 @@ Preferred communication style: Simple, everyday language.
 - **Development**: Hot module replacement via Vite integration
 
 ### Data Storage Solutions
-- **Current**: In-memory storage (MemStorage) for development
-- **Prepared**: Firebase Firestore integration ready
+- **Current**: LocalStorage for static deployment compatibility
+- **Previous**: Firebase Firestore integration (replaced for cost reasons)
 - **Schema Location**: Shared schema definitions in `/shared/schema.ts`
-- **Firebase Config**: Configured for project "agu-event-cpx"
+- **LocalStorage Implementation**: 
+  - Auto-increment IDs with counters
+  - JSON serialization for complex data
+  - Automatic backup/restore functionality
+  - Data persistence across browser sessions
 - **Collections**: students, transactions, market_sessions, admins
-- **Note**: Firebase requires service account key for production use
+- **Backup System**: Export/import JSON files for data protection
 
 ## Key Components
 
@@ -63,6 +68,7 @@ Preferred communication style: Simple, everyday language.
 - **Login**: Authentication for both students and admins
 - **Dashboard**: Student interface showing points and transaction history
 - **Admin**: Administrative interface for managing students and transactions
+- **Data Management**: Backup/restore interface for LocalStorage data (admin only)
 
 ## Data Flow
 
