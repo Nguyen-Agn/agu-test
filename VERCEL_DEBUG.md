@@ -2,15 +2,25 @@
 
 ## Lỗi đã sửa:
 
+### 3. Function Runtime Version Error ✅
+```
+Error: Function Runtimes must have a valid version, for example `now-php@1.0.0`.
+```
+
+**Fix:**
+- Đổi từ `@vercel/node@18.x` sang `@vercel/node@18.18.0`
+- Chỉ định version cụ thể thay vì wildcard
+- Đồng bộ tất cả Node.js version configs
+
 ### 1. Node.js Version Error ✅
 ```
 Error: Found invalid Node.js Version: "22.x". Please set Node.js Version to 18.x
 ```
 
 **Fix:**
-- `vercel.json`: `"runtime": "@vercel/node@18.x"`
-- `api/package.json`: `"engines": {"node": "18.x"}`
-- `.node-version`: `18`
+- `vercel.json`: `"runtime": "@vercel/node@18.18.0"`
+- `api/package.json`: `"engines": {"node": "18.18.0"}`
+- `.node-version`: `18.18.0`
 
 ### 2. 404 Error cho static assets ✅
 ```
