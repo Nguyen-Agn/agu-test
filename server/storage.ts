@@ -534,4 +534,4 @@ export class FirebaseStorage implements IStorage {
 
 // Temporarily using in-memory storage for development
 // To use Firebase, change to: export const storage = new FirebaseStorage();
-export const storage = new FirebaseStorage();
+export const storage = new MemStorage();
