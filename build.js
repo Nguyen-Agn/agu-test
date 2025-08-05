@@ -44,6 +44,14 @@ async function buildProject() {
       fs.writeFileSync('dist/404.html', indexHtml);
     }
 
+    // Create _redirects file for better routing
+    const redirects = `# Handle client-side routing
+/*    /index.html   200
+
+# API routes to functions  
+/api/*  /api/index.js  200`;
+    fs.writeFileSync('dist/_redirects', redirects);
+
     console.log('✅ Frontend build completed!');
     console.log('📁 Frontend: dist/ directory');
     console.log('🔧 API: api/ functions for Vercel');
